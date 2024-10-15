@@ -17,7 +17,11 @@ function getDogsList() {
 }
 
 // TODO: Implement this
-function getDogImage(breed) {}
+function getDogImage(breed) {
+  fetch(`${BASE_URL}breed/${breed}/images/random`)
+    .then((res) => res.json())
+    .then((data) => data.message);
+}
 
 // === MARK: Render
 function renderSelect() {
