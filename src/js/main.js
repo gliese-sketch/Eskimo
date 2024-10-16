@@ -22,29 +22,36 @@ async function getDogsList() {
 }
 
 // Fetch a single dog breed image
-function getDogImage(breed) {
-  return fetch(`${BASE_URL}breed/${breed}/images/random`)
-    .then((res) => res.json())
-    .then((data) => data.message)
-    .catch((error) => console.error(error));
+async function getDogImage(breed) {
+  try {
+    const res = await fetch(`${BASE_URL}breed/${breed}/images/random`);
+    const data = await res.json();
+    return data.message;
+  } catch (error) {
+    return console.error(error);
+  }
 }
 
 // === MARK: Render
-function renderSelect() {
-  getDogsList().then((breedList) => {
-    for (let breed in breedList) {
-      breedListEl.appendChild(Option(breed));
-    }
+async function renderSelect() {
+  const dogsList = await getDogsList();
+
+  Object.keys(dogsList).forEach((dogName) => {
+    breedListEl.appendChild(Option(dogName));
   });
 }
 
-function renderImage(breed) {
-  getDogImage(breed).then((data) => {
-    // image mein render karna hai
-    imageEl.src = data;
-  });
+async function renderImage(breed) {
+  const dogImage = await getDogImage(breed);
+  imageEl.src = dogImage;
 }
 
 renderImage("poodle");
 
 renderSelect();
+
+// === MARK:  Events
+breedListEl.addEventListener("change", async (e) => {
+  const currentValue = e.target.value;
+  renderImage(currentValue);
+});
