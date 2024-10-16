@@ -36,22 +36,30 @@ async function getDogImage(breed) {
 async function renderSelect() {
   const dogsList = await getDogsList();
 
+  const fragment = document.createDocumentFragment();
+
   Object.keys(dogsList).forEach((dogName) => {
-    breedListEl.appendChild(Option(dogName));
+    fragment.appendChild(Option(dogName));
   });
+
+  breedListEl.append(fragment);
 }
 
 async function renderImage(breed) {
+  imageEl.src = "loading.gif";
+
   const dogImage = await getDogImage(breed);
   imageEl.src = dogImage;
+  imageEl.alt = breed;
 }
-
-renderImage("poodle");
-
-renderSelect();
 
 // === MARK:  Events
 breedListEl.addEventListener("change", async (e) => {
   const currentValue = e.target.value;
   renderImage(currentValue);
+});
+
+// === Render on inital load
+document.addEventListener("DOMContentLoaded", () => {
+  renderSelect();
 });
